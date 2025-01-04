@@ -26,7 +26,7 @@ resource "aws_batch_compute_environment" "batch-compute-environment" {
     type                        = "MANAGED"
     # add compute_resources
     compute_resources {
-        instance_type = [ "g6.4xlarge", "g6.8xlarge" ]
+        instance_type = [  "g6.8xlarge", "g6.16xlarge" ]
         subnets = [ for s in aws_subnet.worker-subnets: s.id ]
         type = "SPOT"
         max_vcpus = 128
@@ -76,9 +76,9 @@ resource "aws_batch_job_definition" "batch-job-definition" {
     type                 = "container"
     container_properties = jsonencode({
         Image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.prefix}-${var.stage}-codm:latest"
-        Memory = 32000
+        Memory = 96000
         Privileged = true
-        Vcpus = 16
+        Vcpus = 32
         ResourceRequirements = [
             {
                 type = "GPU"
